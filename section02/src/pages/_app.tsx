@@ -5,7 +5,7 @@ import type { AppProps } from "next/app";
 import { ReactNode } from "react";
 
 type NextPageWithLayout = NextPage & {
-  getLayout: (page: ReactNode) => ReactNode;
+  getLayout?: (page: ReactNode) => ReactNode;
 };
 
 export default function App({
