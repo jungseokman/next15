@@ -1,4 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { prismaExclude } from 'src/util/prisma-exclude';
@@ -8,7 +10,10 @@ import { UpdateBookDto } from './dto/update-book.dto';
 
 @Injectable()
 export class BookService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) {}
 
   async createBook(createBookDto: CreateBookDto) {
     const searchIndex = removeWhitespace([
@@ -44,11 +49,17 @@ export class BookService {
   }
 
   async findRandomBooks() {
+    const cacheKey = 'random_books';
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
     const query = `
     SELECT id, title, "subTitle", description, author, publisher, "coverImgUrl" 
     FROM "Book" ORDER BY RANDOM() LIMIT 3
     `;
-    return await this.prisma.$queryRawUnsafe(query);
+    const result = await this.prisma.$queryRawUnsafe(query);
+    await this.cacheManager.set(cacheKey, result, 3600);
+    return result;
   }
 
   async findOneBook(id: number) {

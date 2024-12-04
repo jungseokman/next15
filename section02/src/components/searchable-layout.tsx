@@ -1,6 +1,28 @@
 import { useRouter } from "next/router";
 import React, { ReactNode, useEffect, useState } from "react";
-import style from "./searchable-layout.module.css";
+import styled from "styled-components";
+
+const SearchbarContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  > input {
+    flex: 1;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid rgb(220, 220, 220);
+  }
+
+  > button {
+    width: 80px;
+    border-radius: 5px;
+    border: none;
+    background-color: rgb(37, 147, 255);
+    color: white;
+    cursor: pointer;
+  }
+`;
 
 const SearchableLayout = ({ children }: { children: ReactNode }) => {
   const [search, setSearch] = useState("");
@@ -26,7 +48,7 @@ const SearchableLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <div>
-      <div className={style.searchbar_container}>
+      <SearchbarContainer>
         <input
           value={search}
           onKeyDown={onKeyDown}
@@ -34,7 +56,7 @@ const SearchableLayout = ({ children }: { children: ReactNode }) => {
           placeholder="검색어를 입력하세요..."
         />
         <button onClick={onSubmit}>검색</button>
-      </div>
+      </SearchbarContainer>
       {children}
     </div>
   );

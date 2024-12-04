@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import { AppModule } from './app.module';
 
+import { Logger } from '@nestjs/common';
 import { ClassValidatorException } from './util/class-validator-exeption';
 import { PrismaClientExceptionFilter } from './util/prisma-client-exception.filter';
 
@@ -41,5 +42,7 @@ async function bootstrap() {
   SwaggerModule.setup(`api`, app, document, options);
 
   await app.listen(12345);
+  const logger = new Logger('Bootstrap');
+  logger.log(`Application is running on: ${await app.getUrl()}`);
 }
 bootstrap();
