@@ -8,7 +8,7 @@ import style from "./[id].module.css";
 
 export async function getStaticPaths() {
   const books = await fetchBooks();
-  const paths = books.slice(0, 5).map((book) => ({
+  const paths = books.slice(0, 100).map((book) => ({
     params: { id: book.id.toString() },
   }));
 
