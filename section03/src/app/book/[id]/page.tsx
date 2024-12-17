@@ -4,9 +4,9 @@ import style from "./page.module.css";
 export default async function Page({
   params,
 }: {
-  params: { id: string | string[] };
+  params: Promise<{ id: string | string[] }>;
 }) {
-  const { id } = await Promise.resolve(params);
+  const { id } = await params;
 
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book/${id}`);
   if (!response.ok) {
