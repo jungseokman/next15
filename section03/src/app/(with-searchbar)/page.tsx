@@ -2,6 +2,8 @@ import BookItem from "@/components/book-item";
 import { BookData } from "@/types";
 import style from "./page.module.css";
 
+//export const dynamic = "force-static";
+
 async function AllBooks() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book`, {
     cache: "force-cache",
