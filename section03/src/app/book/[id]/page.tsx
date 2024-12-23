@@ -10,14 +10,10 @@ export function generateStaticParams() {
   return [{ id: "1" }, { id: "2" }, { id: "3" }];
 }
 
-export default async function Page({
-  params,
-}: {
-  params: Promise<{ id: string | string[] }>;
-}) {
-  const { id } = await params;
-
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book/${id}`);
+async function BookDetail({ bookId }: { bookId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/book/${bookId}`
+  );
   if (!response.ok) {
     if (response.status === 404) {
       notFound();
@@ -29,7 +25,7 @@ export default async function Page({
   const { title, subTitle, description, author, publisher, coverImgUrl } = book;
 
   return (
-    <div className={style.container}>
+    <section>
       <div
         className={style.cover_img_container}
         style={{ backgroundImage: `url('${coverImgUrl}')` }}
@@ -42,6 +38,58 @@ export default async function Page({
         {author} | {publisher}
       </div>
       <div className={style.description}>{description}</div>
+    </section>
+  );
+}
+function ReviewEditor({ bookId }: { bookId: string }) {
+  async function createReviewAction(formData: FormData) {
+    "use server";
+
+    const content = formData.get("content")?.toString();
+    const author = formData.get("author")?.toString();
+
+    if (!content || !author) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/review`,
+        {
+          method: "POST",
+          body: JSON.stringify({ bookId, content, author }),
+        }
+      );
+
+      console.log(response.status);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
+
+  return (
+    <section>
+      <form action={createReviewAction}>
+        <input required name="content" placeholder="리뷰를 작성해주세요." />
+        <input required name="author" placeholder="작성자" />
+        <button type="submit">작성하기</button>
+      </form>
+    </section>
+  );
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  return (
+    <div className={style.container}>
+      <BookDetail bookId={id} />
+      <ReviewEditor bookId={id} />
     </div>
   );
 }
