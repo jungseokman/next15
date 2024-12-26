@@ -46,7 +46,8 @@ async function BookDetail({ bookId }: { bookId: string }) {
 
 async function ReviewList({ bookId }: { bookId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/review/book/${bookId}`
+    `${process.env.NEXT_PUBLIC_API_URL}/review/book/${bookId}`,
+    { next: { tags: [`reviews-${bookId}`] } }
   );
 
   if (!response.ok) {
