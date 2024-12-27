@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 
-export async function deleteReviewAction(_: any, formData: FormData) {
+export async function deleteReviewAction(_: unknown, formData: FormData) {
   const reviewId = formData.get("reviewId")?.toString();
   const bookId = formData.get("bookId")?.toString();
 
@@ -30,9 +30,6 @@ export async function deleteReviewAction(_: any, formData: FormData) {
       error: "",
     };
   } catch (error) {
-    return {
-      status: false,
-      error: `리뷰 삭제 중 오류가 발생했습니다. : ${error}`,
-    };
+    return { status: false, error: `리뷰 삭제에 실패했습니다. : ${error}` };
   }
 }
